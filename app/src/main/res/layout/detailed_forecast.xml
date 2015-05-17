@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Today, 17 May"
+        android:id="@+id/theDate"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="12 C"
+        android:id="@+id/minTemperature"
+        android:layout_below="@+id/theDate"
+        android:layout_alignRight="@+id/theDate"
+        android:layout_alignEnd="@+id/theDate"
+        android:layout_marginTop="44dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="15 C"
+        android:id="@+id/maxTemporature"
+        android:layout_below="@+id/minTemperature"
+        android:layout_alignLeft="@+id/minTemperature"
+        android:layout_alignStart="@+id/minTemperature"
+        android:layout_marginTop="16dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignTop="@+id/minTemperature"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="78dp"
+        android:layout_marginEnd="78dp"
+        android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha" />
+
+</LinearLayout>

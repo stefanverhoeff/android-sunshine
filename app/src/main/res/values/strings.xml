@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sunshine</string>
+    <string name="hello_world">Hello world, it\'s me Stefan! Again. Yay!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_awesome">Awesome</string>
+    <string name="nice_button">Click me!</string>
+</resources>
