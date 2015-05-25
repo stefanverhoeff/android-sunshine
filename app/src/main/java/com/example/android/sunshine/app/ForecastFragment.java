@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,15 +27,37 @@ import java.util.ArrayList;
  */
 public class ForecastFragment extends Fragment {
 
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
+
     private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forecastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            new FetchWeatherDataTask().execute();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.forecastfragment_main, container, false);
+
+        this.setHasOptionsMenu(true);
 
         ArrayList<String> weatherList = new ArrayList<>();
         weatherList.add("Monday - sunny - 7 / 15 ");
@@ -42,8 +67,6 @@ public class ForecastFragment extends Fragment {
         weatherList.add("Friday - stormy - 7 / 12 ");
         weatherList.add("Saturday - greyish - 12 / 15 ");
         weatherList.add("Sunday - hot - 17 / 25 ");
-
-        new FetchWeatherDataTask().execute();
 
         mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
 
@@ -55,9 +78,11 @@ public class ForecastFragment extends Fragment {
 
     private class FetchWeatherDataTask extends AsyncTask<String, Void, String> {
 
+        private final String LOG_TAG = FetchWeatherDataTask.class.getSimpleName();
+
         protected void onPostExecute(String weatherData) {
             // Add weather to UI
-            Log.i("WeatherData", weatherData);
+            Log.i(LOG_TAG, weatherData);
         }
 
         @Override
@@ -104,7 +129,7 @@ public class ForecastFragment extends Fragment {
                 }
                 forecastJsonStr = buffer.toString();
             } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
+                Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
                 return null;
@@ -116,7 +141,7 @@ public class ForecastFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                        Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
             }
