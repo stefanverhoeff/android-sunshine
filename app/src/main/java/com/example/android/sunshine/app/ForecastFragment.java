@@ -22,11 +22,11 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class ForecastFragment extends Fragment {
 
     private ArrayAdapter<String> mForecastAdapter;
 
-    public MainActivityFragment() {
+    public ForecastFragment() {
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ArrayList<String> weatherList = new ArrayList<String>();
+        ArrayList<String> weatherList = new ArrayList<>();
         weatherList.add("Monday - sunny - 7 / 15 ");
         weatherList.add("Tuesday - rainy - 5 / 16 ");
         weatherList.add("Wednesday - cloudy - 8 / 18 ");
@@ -45,7 +45,7 @@ public class MainActivityFragment extends Fragment {
 
         new FetchWeatherDataTask().execute();
 
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
+        mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
 
         ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
         listViewForecast.setAdapter(mForecastAdapter);
