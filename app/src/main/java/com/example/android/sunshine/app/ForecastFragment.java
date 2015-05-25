@@ -1,6 +1,9 @@
 package com.example.android.sunshine.app;
 
+import android.annotation.TargetApi;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -28,6 +34,8 @@ import java.util.ArrayList;
 public class ForecastFragment extends Fragment {
 
     private final String LOG_TAG = ForecastFragment.class.getSimpleName();
+
+    private final String initialPostCode = "10245,Berlin";
 
     private ArrayAdapter<String> mForecastAdapter;
 
@@ -44,7 +52,7 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            new FetchWeatherDataTask().execute();
+            new FetchWeatherDataTask().execute(initialPostCode);
 
             return true;
         }
@@ -53,11 +61,17 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);
+
+        new FetchWeatherDataTask().execute(initialPostCode);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.forecastfragment_main, container, false);
-
-        this.setHasOptionsMenu(true);
 
         ArrayList<String> weatherList = new ArrayList<>();
         weatherList.add("Monday - sunny - 7 / 15 ");
@@ -80,13 +94,26 @@ public class ForecastFragment extends Fragment {
 
         private final String LOG_TAG = FetchWeatherDataTask.class.getSimpleName();
 
+        private final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=metric&cnt=15";
+
         protected void onPostExecute(String weatherData) {
             // Add weather to UI
-            Log.i(LOG_TAG, weatherData);
+            Log.v(LOG_TAG, weatherData);
+
+            try {
+                String[] weatherDataFromJson = new WeatherDataParser().getWeatherDataFromJson(weatherData, 15);
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(Arrays.asList(weatherDataFromJson));
+                mForecastAdapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Failed to parse weather JSON", e);
+            }
         }
 
         @Override
         protected String doInBackground(String... params) {
+            String postCode = params[0];
+
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -99,7 +126,11 @@ public class ForecastFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?lat=52.52&lon=13.41&mode=json&units=metric&cnt=7");
+                Uri weatherUri = Uri.parse(BASE_URL).buildUpon()
+                        .appendQueryParameter("q", postCode)
+                        .build();
+
+                URL url = new URL(weatherUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
