@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 
 /**
@@ -51,6 +52,9 @@ public class ForecastFragment extends Fragment {
 
         if (id == R.id.action_refresh) {
             new FetchWeatherDataTask().execute(initialPostCode);
+            Date now = new Date();
+            String appTitle = String.format("%s (%02d:%02d:%02d)", getString(R.string.app_name), now.getHours(), now.getMinutes(), now.getSeconds());
+            getActivity().setTitle(appTitle);
 
             return true;
         }
