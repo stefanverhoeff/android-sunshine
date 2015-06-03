@@ -1,11 +1,9 @@
 package com.example.android.sunshine.app;
 
-import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,13 +72,6 @@ public class ForecastFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.forecastfragment_main, container, false);
 
         ArrayList<String> weatherList = new ArrayList<>();
-        weatherList.add("Monday - sunny - 7 / 15 ");
-        weatherList.add("Tuesday - rainy - 5 / 16 ");
-        weatherList.add("Wednesday - cloudy - 8 / 18 ");
-        weatherList.add("Thursday - sunny - 14 / 21 ");
-        weatherList.add("Friday - stormy - 7 / 12 ");
-        weatherList.add("Saturday - greyish - 12 / 15 ");
-        weatherList.add("Sunday - hot - 17 / 25 ");
 
         mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
 
@@ -90,28 +81,21 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
-    private class FetchWeatherDataTask extends AsyncTask<String, Void, String> {
+    private class FetchWeatherDataTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchWeatherDataTask.class.getSimpleName();
 
         private final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=metric&cnt=15";
 
-        protected void onPostExecute(String weatherData) {
+        protected void onPostExecute(String[] weatherData) {
             // Add weather to UI
-            Log.v(LOG_TAG, weatherData);
-
-            try {
-                String[] weatherDataFromJson = new WeatherDataParser().getWeatherDataFromJson(weatherData, 15);
-                mForecastAdapter.clear();
-                mForecastAdapter.addAll(Arrays.asList(weatherDataFromJson));
-                mForecastAdapter.notifyDataSetChanged();
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "Failed to parse weather JSON", e);
-            }
+            mForecastAdapter.clear();
+            mForecastAdapter.addAll(Arrays.asList(weatherData));
+            mForecastAdapter.notifyDataSetChanged();
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             String postCode = params[0];
 
             // These two need to be declared outside the try/catch
@@ -177,7 +161,14 @@ public class ForecastFragment extends Fragment {
                 }
             }
 
-            return forecastJsonStr;
+            String[] weatherDataFromJson = new String[0];
+            try {
+                weatherDataFromJson = new WeatherDataParser().getWeatherDataFromJson(forecastJsonStr, 15);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Failed to parse weather JSON", e);
+            }
+
+            return weatherDataFromJson;
         }
     }
 
