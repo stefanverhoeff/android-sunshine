@@ -44,6 +44,7 @@ public class ForecastFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecastfragment, menu);
+        updateTitle();
     }
 
     @Override
@@ -52,14 +53,18 @@ public class ForecastFragment extends Fragment {
 
         if (id == R.id.action_refresh) {
             new FetchWeatherDataTask().execute(initialPostCode);
-            Date now = new Date();
-            String appTitle = String.format("%s (%02d:%02d:%02d)", getString(R.string.app_name), now.getHours(), now.getMinutes(), now.getSeconds());
-            getActivity().setTitle(appTitle);
+            updateTitle();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateTitle() {
+        Date now = new Date();
+        String appTitle = String.format("%s @ %s (%02d:%02d:%02d)", getString(R.string.app_name), initialPostCode, now.getHours(), now.getMinutes(), now.getSeconds());
+        getActivity().setTitle(appTitle);
     }
 
     @Override
