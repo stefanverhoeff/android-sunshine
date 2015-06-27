@@ -1,5 +1,6 @@
 package com.example.android.sunshine.app;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,8 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -24,7 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -62,8 +67,8 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateTitle() {
-        Date now = new Date();
-        String appTitle = String.format("%s @ %s (%02d:%02d:%02d)", getString(R.string.app_name), initialPostCode, now.getHours(), now.getMinutes(), now.getSeconds());
+        Calendar calendar = new GregorianCalendar();
+        String appTitle = String.format("%s @ %s (%02d:%02d:%02d)", getString(R.string.app_name), initialPostCode, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
         getActivity().setTitle(appTitle);
     }
 
@@ -78,14 +83,26 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.forecastfragment_main, container, false);
+        final View rootView = inflater.inflate(R.layout.forecastfragment_main, container, false);
 
         ArrayList<String> weatherList = new ArrayList<>();
 
         mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
 
-        ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
+        final ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
         listViewForecast.setAdapter(mForecastAdapter);
+        listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Context context = rootView.getContext();
+
+                CharSequence text = listViewForecast.getItemAtPosition(position).toString();
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast.makeText(context, text, duration)
+                        .show();
+            }
+        });
 
         return rootView;
     }
