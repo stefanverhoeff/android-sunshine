@@ -111,7 +111,9 @@ public class ForecastFragment extends Fragment {
 
         private final String LOG_TAG = FetchWeatherDataTask.class.getSimpleName();
 
-        private final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=metric&cnt=15";
+        private final String APP_ID = "b95677c89902dc35959d2ef9c3a455d9";
+
+        private final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=metric&cnt=15&appid=" + APP_ID;
 
         protected void onPostExecute(String[] weatherData) {
             // Add weather to UI
