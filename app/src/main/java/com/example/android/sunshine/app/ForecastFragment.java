@@ -28,8 +28,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 /**
@@ -37,6 +37,7 @@ import java.util.GregorianCalendar;
  */
 public class ForecastFragment extends Fragment {
 
+    @SuppressWarnings("unused")
     private final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     private final String initialPostCode = "10245,Berlin";
@@ -68,7 +69,7 @@ public class ForecastFragment extends Fragment {
 
     private void updateTitle() {
         Calendar calendar = new GregorianCalendar();
-        String appTitle = String.format("%s @ %s (%02d:%02d:%02d)", getString(R.string.app_name), initialPostCode, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        String appTitle = String.format(Locale.getDefault(), "%s @ %s (%02d:%02d:%02d)", getString(R.string.app_name), initialPostCode, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
         getActivity().setTitle(appTitle);
     }
 
